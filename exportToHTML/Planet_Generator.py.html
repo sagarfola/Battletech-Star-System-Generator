@@ -1,0 +1,62 @@
+<html>
+<head>
+<title>Planet_Generator.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Planet_Generator.py</font>
+</center></td></tr></table>
+<pre><span class="s0">from </span><span class="s1">dice_roller </span><span class="s0">import </span><span class="s1">rolldice</span>
+<span class="s2"># Generate Asteroid Belt</span>
+<span class="s0">def </span><span class="s1">Asteroid_Belt():</span>
+    <span class="s1">ast_diameter = </span><span class="s3">400 </span><span class="s1">+ </span><span class="s3">100 </span><span class="s1">* rolldice(</span><span class="s3">3</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">ast_density = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) ** </span><span class="s3">1.15</span>
+    <span class="s1">ast_day_length = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s0">return </span><span class="s1">ast_diameter</span><span class="s0">, </span><span class="s1">ast_density</span><span class="s0">, </span><span class="s1">ast_day_length</span>
+
+<span class="s2"># Generate Dwarf Terrestrial</span>
+<span class="s0">def </span><span class="s1">Dwarf_Terrestrial():</span>
+    <span class="s1">d_terra_diameter = </span><span class="s3">400 </span><span class="s1">+ </span><span class="s3">100 </span><span class="s1">* rolldice(</span><span class="s3">3</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">d_terra_density = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">d_terra_day_length = rolldice(</span><span class="s3">3</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) + </span><span class="s3">12</span>
+    <span class="s0">return </span><span class="s1">d_terra_day_length</span><span class="s0">, </span><span class="s1">d_terra_diameter</span><span class="s0">, </span><span class="s1">d_terra_density</span>
+
+<span class="s2"># Generate Terrestrial</span>
+<span class="s0">def </span><span class="s1">Terrestrial():</span>
+    <span class="s1">terra_diameter = </span><span class="s3">2500 </span><span class="s1">+ </span><span class="s3">1000 </span><span class="s1">* rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">terra_density = </span><span class="s3">2.5 </span><span class="s1">+ rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) ** </span><span class="s3">0.75</span>
+    <span class="s1">terra_day_length = rolldice(</span><span class="s3">3</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) + </span><span class="s3">12</span>
+    <span class="s0">return </span><span class="s1">terra_day_length</span><span class="s0">, </span><span class="s1">terra_density</span><span class="s0">, </span><span class="s1">terra_diameter</span>
+
+<span class="s2"># Generate Giant Terrestrial</span>
+<span class="s0">def </span><span class="s1">Giant_Terrestrial():</span>
+    <span class="s1">g_terra_diameter = </span><span class="s3">12500 </span><span class="s1">+ </span><span class="s3">1000 </span><span class="s1">* rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">g_terra_density = </span><span class="s3">2 </span><span class="s1">+ rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">g_terra_day_length = rolldice(</span><span class="s3">4</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s0">return </span><span class="s1">g_terra_day_length</span><span class="s0">, </span><span class="s1">g_terra_density</span><span class="s0">, </span><span class="s1">g_terra_diameter</span>
+
+<span class="s2"># Generate Gas Giant</span>
+<span class="s0">def </span><span class="s1">gas_giant():</span>
+    <span class="s1">gas_giant_diameter = </span><span class="s3">50000 </span><span class="s1">+ </span><span class="s3">10000 </span><span class="s1">* rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">gas_giant_density = </span><span class="s3">0.5 </span><span class="s1">+ rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) / </span><span class="s3">10</span>
+    <span class="s1">gas_giant_day_length = rolldice(</span><span class="s3">4</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s0">return </span><span class="s1">gas_giant_day_length</span><span class="s0">, </span><span class="s1">gas_giant_density</span><span class="s0">, </span><span class="s1">gas_giant_diameter</span>
+
+<span class="s2"># Generate Ice Giant</span>
+<span class="s0">def </span><span class="s1">ice_giant():</span>
+    <span class="s1">ice_giant_diameter = </span><span class="s3">25000 </span><span class="s1">+ </span><span class="s3">5000 </span><span class="s1">* rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">ice_giant_density = </span><span class="s3">1 </span><span class="s1">+ rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) / </span><span class="s3">10</span>
+    <span class="s1">ice_giant_day_length = rolldice(</span><span class="s3">4</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s0">return </span><span class="s1">ice_giant_day_length</span><span class="s0">, </span><span class="s1">ice_giant_density</span><span class="s0">, </span><span class="s1">ice_giant_diameter</span>
+</pre>
+</body>
+</html>

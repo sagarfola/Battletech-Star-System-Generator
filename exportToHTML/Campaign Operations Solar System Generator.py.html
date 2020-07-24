@@ -1,0 +1,393 @@
+<html>
+<head>
+<title>Campaign Operations Solar System Generator.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+.s4 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Campaign Operations Solar System Generator.py</font>
+</center></td></tr></table>
+<pre><span class="s0">from </span><span class="s1">dice_roller </span><span class="s0">import </span><span class="s1">rolldice</span>
+<span class="s0">import </span><span class="s1">csv</span>
+<span class="s0">import </span><span class="s1">random</span>
+<span class="s0">import </span><span class="s1">math</span>
+
+<span class="s2"># Determine which table to roll on the Primary Star Generation Table</span>
+<span class="s1">star_style = -</span><span class="s3">1</span>
+<span class="s0">while </span><span class="s1">star_style == -</span><span class="s3">1</span><span class="s1">:</span>
+    <span class="s0">try</span><span class="s1">:</span>
+        <span class="s1">star_style = int(input(</span><span class="s4">&quot;What style of star generation would you like?</span><span class="s0">\n</span><span class="s4">1. Realistic</span><span class="s0">\n</span><span class="s4">2. Life-Friendly</span><span class="s0">\n</span><span class="s4">3. Hot &quot;</span>
+                               <span class="s4">&quot;Star</span><span class="s0">\n</span><span class="s4">4. Random!</span><span class="s0">\n</span><span class="s4">Enter 1, 2, 3 or 4: &quot;</span><span class="s1">))</span>
+        <span class="s0">if </span><span class="s1">star_style &lt; </span><span class="s3">1 </span><span class="s0">or </span><span class="s1">star_style &gt; </span><span class="s3">4</span><span class="s1">:</span>
+            <span class="s1">print(</span><span class="s4">&quot;</span><span class="s0">\n</span><span class="s4">ERROR: Enter 1, 2, 3 or 4 for the star generation style</span><span class="s0">\n</span><span class="s4">&quot;</span><span class="s1">)</span>
+            <span class="s1">star_style = -</span><span class="s3">1</span>
+            <span class="s0">continue</span>
+        <span class="s0">elif </span><span class="s1">star_style == </span><span class="s3">4</span><span class="s1">:</span>
+            <span class="s1">star_style = random.randint(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">3</span><span class="s1">)</span>
+            <span class="s0">break</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s0">break</span>
+    <span class="s0">except </span><span class="s1">ValueError:</span>
+        <span class="s0">continue</span>
+
+<span class="s2"># Determine star type and subtype</span>
+<span class="s0">with </span><span class="s1">open(</span><span class="s4">&quot;Primary Star Generation Table.csv&quot;</span><span class="s1">) </span><span class="s0">as </span><span class="s1">file:</span>
+    <span class="s1">star_select = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">star_search = {star_select: tuple(stars) </span><span class="s0">for </span><span class="s1">star_select</span><span class="s0">, </span><span class="s1">*stars </span><span class="s0">in </span><span class="s1">csv.reader(file)}</span>
+    <span class="s1">real</span><span class="s0">, </span><span class="s1">life</span><span class="s0">, </span><span class="s1">hot = star_search[str(star_select)]</span>
+    <span class="s1">star_style_list = {</span><span class="s3">1</span><span class="s1">: real</span><span class="s0">, </span><span class="s3">2</span><span class="s1">: life</span><span class="s0">, </span><span class="s3">3</span><span class="s1">: hot}</span>
+    <span class="s1">star_subtype = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">10</span><span class="s1">) - </span><span class="s3">1</span>
+    <span class="s1">star_type = (star_style_list[star_style]</span><span class="s0">, </span><span class="s1">star_subtype)</span>
+<span class="s1">print(</span><span class="s4">&quot;Your star type is &quot; </span><span class="s1">+ str(star_type[</span><span class="s3">0</span><span class="s1">]) + str(star_type[</span><span class="s3">1</span><span class="s1">]) + </span><span class="s4">&quot;V.&quot;</span><span class="s1">)</span>
+
+<span class="s2"># Store data about the given star type</span>
+<span class="s0">with </span><span class="s1">open(</span><span class="s4">&quot;Primary Solar Stats Table.csv&quot;</span><span class="s1">) </span><span class="s0">as </span><span class="s1">file:</span>
+    <span class="s1">star_stats = {(star_type</span><span class="s0">, </span><span class="s1">star_subtype): tuple(stats) </span><span class="s0">for </span><span class="s1">star_type</span><span class="s0">, </span><span class="s1">star_subtype</span><span class="s0">, </span><span class="s1">*stats </span><span class="s0">in </span><span class="s1">csv.reader(file)}</span>
+    <span class="s1">charge</span><span class="s0">, </span><span class="s1">transit_time</span><span class="s0">, </span><span class="s1">safe_jump_distance</span><span class="s0">, </span><span class="s1">mass</span><span class="s0">, </span><span class="s1">lum</span><span class="s0">, </span><span class="s1">radius</span><span class="s0">, </span><span class="s1">temp</span><span class="s0">, </span><span class="s1">lifetime</span><span class="s0">, </span><span class="s1">habit_mod</span><span class="s0">, </span><span class="s1">ILZ_dist_km</span><span class="s0">, </span><span class="s1">ILZ_dist_au</span><span class="s0">, </span><span class="s1">ILZ_temp</span><span class="s0">, </span><span class="s1">OLZ_dist_km</span><span class="s0">, </span><span class="s1">OLZ_dist_au</span><span class="s0">, </span><span class="s1">OLZ_temp = \</span>
+        <span class="s1">star_stats[str(star_type[</span><span class="s3">0</span><span class="s1">])</span><span class="s0">, </span><span class="s1">str(star_type[</span><span class="s3">1</span><span class="s1">])]</span>
+
+<span class="s2"># Calculate objects in orbital slots</span>
+<span class="s2"># First, generate number of orbits (2d6 + 3)</span>
+<span class="s1">orbit_total = int(rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) + </span><span class="s3">3</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Orbital slots: &quot; </span><span class="s1">+ str(orbit_total))</span>
+<span class="s1">print(</span><span class="s4">&quot;Star mass: &quot; </span><span class="s1">+ str(mass) + </span><span class="s4">&quot; (Mstar/Msun)&quot;</span><span class="s1">)</span>
+<span class="s2"># Second, place the orbits based on the mass of the star generated</span>
+<span class="s2"># Base locations table for calculations starting with slot 1</span>
+<span class="s1">orbital_locations = []</span>
+<span class="s1">orbital_baselocations = [</span>
+    <span class="s3">0.4</span><span class="s0">,</span>
+    <span class="s3">0.7</span><span class="s0">,</span>
+    <span class="s3">1.0</span><span class="s0">,</span>
+    <span class="s3">1.6</span><span class="s0">,</span>
+    <span class="s3">2.8</span><span class="s0">,</span>
+    <span class="s3">5.2</span><span class="s0">,</span>
+    <span class="s3">10.0</span><span class="s0">,</span>
+    <span class="s3">19.6</span><span class="s0">,</span>
+    <span class="s3">38.8</span><span class="s0">,</span>
+    <span class="s3">77.2</span><span class="s0">,</span>
+    <span class="s3">154.0</span><span class="s0">,</span>
+    <span class="s3">307.6</span><span class="s0">,</span>
+    <span class="s3">614.8</span><span class="s0">,</span>
+    <span class="s3">1229.2</span><span class="s0">,</span>
+    <span class="s3">2458.0</span>
+<span class="s1">]</span>
+<span class="s2"># Fill orbital_locations with the actual star manipulated orbital slots up to the maximum available</span>
+<span class="s1">slot = </span><span class="s3">0</span>
+<span class="s0">while </span><span class="s1">slot &lt; orbit_total:</span>
+    <span class="s1">orbital_locations.insert(slot</span><span class="s0">, </span><span class="s1">orbital_baselocations[slot] * float(mass))</span>
+    <span class="s1">slot += </span><span class="s3">1</span>
+
+<span class="s2"># Classify locations as inner or outer system</span>
+<span class="s1">inner_system = []</span>
+<span class="s1">outer_system = []</span>
+<span class="s1">life_system = []</span>
+<span class="s1">count = </span><span class="s3">0</span>
+<span class="s0">while </span><span class="s1">count &lt; orbit_total:</span>
+    <span class="s0">if </span><span class="s1">orbital_locations[count] &lt;= float(ILZ_dist_au):</span>
+        <span class="s1">inner_system.insert(count</span><span class="s0">, </span><span class="s1">count + </span><span class="s3">1</span><span class="s1">)</span>
+        <span class="s1">count += </span><span class="s3">1</span>
+    <span class="s0">elif </span><span class="s1">float(OLZ_dist_au) &gt;= orbital_locations[count] &gt;= float(ILZ_dist_au):</span>
+        <span class="s1">life_system.insert(count</span><span class="s0">, </span><span class="s1">count + </span><span class="s3">1</span><span class="s1">)</span>
+        <span class="s1">count += </span><span class="s3">1</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">outer_system.insert(count</span><span class="s0">, </span><span class="s1">count + </span><span class="s3">1</span><span class="s1">)</span>
+        <span class="s1">count += </span><span class="s3">1</span>
+
+<span class="s2"># Populates orbital slots based on 2d6 roll and split between inner and outer system</span>
+<span class="s1">inner_system_options = {</span><span class="s3">2</span><span class="s1">: </span><span class="s4">&quot;Empty&quot;</span><span class="s0">,</span>
+                        <span class="s3">3</span><span class="s1">: </span><span class="s4">&quot;Empty&quot;</span><span class="s0">,</span>
+                        <span class="s3">4</span><span class="s1">: </span><span class="s4">&quot;Asteroid Belt&quot;</span><span class="s0">,</span>
+                        <span class="s3">5</span><span class="s1">: </span><span class="s4">&quot;Dwarf Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">6</span><span class="s1">: </span><span class="s4">&quot;Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">7</span><span class="s1">: </span><span class="s4">&quot;Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">8</span><span class="s1">: </span><span class="s4">&quot;Giant Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">9</span><span class="s1">: </span><span class="s4">&quot;Gas Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">10</span><span class="s1">: </span><span class="s4">&quot;Gas Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">11</span><span class="s1">: </span><span class="s4">&quot;Ice Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">12</span><span class="s1">: </span><span class="s4">&quot;Ice Giant&quot;</span><span class="s1">}</span>
+<span class="s1">outer_system_options = {</span><span class="s3">2</span><span class="s1">: </span><span class="s4">&quot;Empty&quot;</span><span class="s0">,</span>
+                        <span class="s3">3</span><span class="s1">: </span><span class="s4">&quot;Empty&quot;</span><span class="s0">,</span>
+                        <span class="s3">4</span><span class="s1">: </span><span class="s4">&quot;Asteroid Belt&quot;</span><span class="s0">,</span>
+                        <span class="s3">5</span><span class="s1">: </span><span class="s4">&quot;Dwarf Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">6</span><span class="s1">: </span><span class="s4">&quot;Gas Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">7</span><span class="s1">: </span><span class="s4">&quot;Gas Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">8</span><span class="s1">: </span><span class="s4">&quot;Gas Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">9</span><span class="s1">: </span><span class="s4">&quot;Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">10</span><span class="s1">: </span><span class="s4">&quot;Giant Terrestrial Planet&quot;</span><span class="s0">,</span>
+                        <span class="s3">11</span><span class="s1">: </span><span class="s4">&quot;Ice Giant&quot;</span><span class="s0">,</span>
+                        <span class="s3">12</span><span class="s1">: </span><span class="s4">&quot;Ice Giant&quot;</span><span class="s1">}</span>
+<span class="s1">inner_system_populated = []</span>
+<span class="s1">outer_system_populated = []</span>
+<span class="s1">life_system_populated = []</span>
+<span class="s1">total_system_populated = []</span>
+<span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">inner_system:</span>
+    <span class="s1">inner_system_populated.append(inner_system_options[rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)])</span>
+<span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">life_system:</span>
+    <span class="s1">life_system_populated.append(inner_system_options[rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)])</span>
+<span class="s0">for </span><span class="s1">x </span><span class="s0">in </span><span class="s1">outer_system:</span>
+    <span class="s1">outer_system_populated.append(outer_system_options[rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)])</span>
+<span class="s1">total_system_populated = inner_system_populated + life_system_populated + outer_system_populated</span>
+<span class="s1">print(</span><span class="s4">&quot;Life zone bounds are &quot; </span><span class="s1">+ str(ILZ_dist_au) + </span><span class="s4">&quot; AU to &quot; </span><span class="s1">+ str(OLZ_dist_au) + </span><span class="s4">&quot; AU.&quot;</span><span class="s1">)</span>
+<span class="s1">print(</span><span class="s4">&quot;Inner System slots: &quot; </span><span class="s1">+ str(inner_system))</span>
+<span class="s1">print(inner_system_populated)</span>
+<span class="s1">print(</span><span class="s4">&quot;Life Zone slots: &quot; </span><span class="s1">+ str(life_system))</span>
+<span class="s1">print(life_system_populated)</span>
+<span class="s1">print(</span><span class="s4">&quot;Outer System slots: &quot; </span><span class="s1">+ str(outer_system))</span>
+<span class="s1">print(outer_system_populated)</span>
+
+<span class="s2"># Parameters to calculate planet parameters.</span>
+<span class="s2"># Sorted by Asteroid Belt, Dwarf Terrestrial, Terrestrial, Giant Terrestrial, Gas Giant, Ice Giant</span>
+<span class="s1">planet_type_dict = {</span><span class="s4">&quot;Empty&quot;</span><span class="s1">: </span><span class="s3">0</span><span class="s0">,</span>
+                    <span class="s4">&quot;Asteroid Belt&quot;</span><span class="s1">: </span><span class="s3">1</span><span class="s0">,</span>
+                    <span class="s4">&quot;Dwarf Terrestrial Planet&quot;</span><span class="s1">: </span><span class="s3">2</span><span class="s0">,</span>
+                    <span class="s4">&quot;Terrestrial Planet&quot;</span><span class="s1">: </span><span class="s3">3</span><span class="s0">,</span>
+                    <span class="s4">&quot;Giant Terrestrial Planet&quot;</span><span class="s1">: </span><span class="s3">4</span><span class="s0">,</span>
+                    <span class="s4">&quot;Gas Giant&quot;</span><span class="s1">: </span><span class="s3">5</span><span class="s0">,</span>
+                    <span class="s4">&quot;Ice Giant&quot;</span><span class="s1">: </span><span class="s3">6</span><span class="s0">,</span>
+                    <span class="s4">&quot;[]&quot;</span><span class="s1">: </span><span class="s3">0</span><span class="s1">}</span>
+
+<span class="s2"># Function to calculate Planet Data</span>
+<span class="s0">def </span><span class="s1">Planetary_Object(planet_type):</span>
+    <span class="s2"># Values for calculating Planetary Data</span>
+    <span class="s1">dia_base = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">400</span><span class="s0">, </span><span class="s3">400</span><span class="s0">, </span><span class="s3">2500</span><span class="s0">, </span><span class="s3">12500</span><span class="s0">, </span><span class="s3">50000</span><span class="s0">, </span><span class="s3">25000</span><span class="s1">]</span>
+    <span class="s1">dia_mod = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">100</span><span class="s0">, </span><span class="s3">1000</span><span class="s0">, </span><span class="s3">1000</span><span class="s0">, </span><span class="s3">10000</span><span class="s0">, </span><span class="s3">5000</span><span class="s1">]</span>
+    <span class="s1">dia_die_num = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">3</span><span class="s0">, </span><span class="s3">3</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">1</span><span class="s1">]</span>
+    <span class="s1">den_base = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">2.5</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">0.5</span><span class="s0">, </span><span class="s3">1</span><span class="s1">]</span>
+    <span class="s1">den_die_num = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">2</span><span class="s1">]</span>
+    <span class="s1">den_exp = [</span><span class="s3">1</span><span class="s0">, </span><span class="s3">1.15</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">0.75</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s1">]</span>
+    <span class="s1">den_die_div = [</span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">1</span><span class="s0">, </span><span class="s3">10</span><span class="s0">, </span><span class="s3">10</span><span class="s1">]</span>
+    <span class="s1">day_die_num = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">2</span><span class="s0">, </span><span class="s3">3</span><span class="s0">, </span><span class="s3">3</span><span class="s0">, </span><span class="s3">4</span><span class="s0">, </span><span class="s3">4</span><span class="s0">, </span><span class="s3">4</span><span class="s1">]</span>
+    <span class="s1">day_die_base = [</span><span class="s3">0</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">12</span><span class="s0">, </span><span class="s3">12</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">0</span><span class="s0">, </span><span class="s3">0</span><span class="s1">]</span>
+
+    <span class="s2"># Actual Calculations</span>
+    <span class="s1">diameter = dia_base[planet_type] + dia_mod[planet_type] * rolldice(dia_die_num[planet_type]</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+    <span class="s1">density = den_base[planet_type] + (rolldice(den_die_num[planet_type]</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) / den_die_div[planet_type]) ** den_exp[planet_type]</span>
+    <span class="s1">day_length = rolldice(day_die_num[planet_type]</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) + day_die_base[planet_type]</span>
+    <span class="s1">gravity = (diameter / </span><span class="s3">12742</span><span class="s1">) * (density / </span><span class="s3">5.5153</span><span class="s1">)</span>
+    <span class="s1">esc_velocity = </span><span class="s3">11186 </span><span class="s1">* (diameter / </span><span class="s3">12742</span><span class="s1">) * math.sqrt(density / </span><span class="s3">5.5153</span><span class="s1">) </span><span class="s2"># escape velocity in m/s</span>
+    <span class="s0">return </span><span class="s1">diameter</span><span class="s0">, </span><span class="s1">density</span><span class="s0">, </span><span class="s1">day_length</span><span class="s0">, </span><span class="s1">gravity</span><span class="s0">, </span><span class="s1">esc_velocity</span>
+
+<span class="s2"># Function to calculate Planet Moons</span>
+<span class="s0">def </span><span class="s1">Moons(planet_type):</span>
+    <span class="s2"># Initializing Data</span>
+    <span class="s1">small_moon = </span><span class="s3">0</span>
+    <span class="s1">medium_moon = </span><span class="s3">0</span>
+    <span class="s1">large_moon = </span><span class="s3">0</span>
+    <span class="s1">giant_moon = </span><span class="s3">0</span>
+    <span class="s1">rings = </span><span class="s0">False</span>
+    <span class="s1">moonroll = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+
+    <span class="s0">if </span><span class="s1">planet_type == </span><span class="s3">0 </span><span class="s0">or </span><span class="s1">planet_type == </span><span class="s3">1</span><span class="s1">:</span>
+        <span class="s1">small_moon = </span><span class="s3">0</span>
+        <span class="s1">medium_moon = </span><span class="s3">0</span>
+        <span class="s1">large_moon = </span><span class="s3">0</span>
+        <span class="s1">giant_moon = </span><span class="s3">0</span>
+        <span class="s1">rings = </span><span class="s0">False</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s0">if </span><span class="s1">moonroll &lt; </span><span class="s3">3</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">planet_type == </span><span class="s3">2</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">5</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">3</span><span class="s1">:</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">5</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">4</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">giant_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">5</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">5</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">5</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">,</span><span class="s3">6</span><span class="s1">) - </span><span class="s3">2</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">1</span>
+                <span class="s1">giant_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">4</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">6</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">giant_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+        <span class="s0">elif </span><span class="s3">5 </span><span class="s1">&gt; moonroll &gt; </span><span class="s3">2</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">planet_type == </span><span class="s3">2</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">2</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">3</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">4</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">2</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) -</span><span class="s3">3</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">5</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">5</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">,</span><span class="s3">6</span><span class="s1">) - </span><span class="s3">2</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">5</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">6</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">2</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">4</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+        <span class="s0">elif </span><span class="s1">moonroll &gt; </span><span class="s3">4</span><span class="s1">:</span>
+            <span class="s0">if </span><span class="s1">planet_type == </span><span class="s3">3</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">2</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">4</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">3</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">5</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">5</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">,</span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">5</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+            <span class="s0">elif </span><span class="s1">planet_type == </span><span class="s3">6</span><span class="s1">:</span>
+                <span class="s1">small_moon = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">)</span>
+                <span class="s1">medium_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">3</span>
+                <span class="s1">large_moon = rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - </span><span class="s3">4</span>
+                <span class="s0">if </span><span class="s1">rolldice(</span><span class="s3">1</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) &lt; </span><span class="s3">4</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">True</span>
+                <span class="s0">else</span><span class="s1">:</span>
+                    <span class="s1">rings = </span><span class="s0">False</span>
+    <span class="s1">small_moon = int((abs(small_moon) + small_moon)/</span><span class="s3">2</span><span class="s1">)</span>
+    <span class="s1">medium_moon = int((abs(medium_moon) + medium_moon)/</span><span class="s3">2</span><span class="s1">)</span>
+    <span class="s1">large_moon = int((abs(large_moon) + large_moon)/</span><span class="s3">2</span><span class="s1">)</span>
+    <span class="s1">giant_moon = int((abs(giant_moon) + giant_moon)/</span><span class="s3">2</span><span class="s1">)</span>
+    <span class="s0">return </span><span class="s1">small_moon</span><span class="s0">, </span><span class="s1">medium_moon</span><span class="s0">, </span><span class="s1">large_moon</span><span class="s0">, </span><span class="s1">giant_moon</span><span class="s0">, </span><span class="s1">rings</span>
+
+
+<span class="s2"># Calculate actual data and create list of tuples</span>
+<span class="s1">planet_type = []</span>
+<span class="s1">planet_file = []</span>
+<span class="s1">moon_file = []</span>
+<span class="s1">terra_atmosphere = []</span>
+<span class="s1">lifezone_check = []</span>
+
+<span class="s1">i = </span><span class="s3">0</span>
+<span class="s0">while </span><span class="s1">i &lt; len(total_system_populated):</span>
+    <span class="s2"># Calculates the planet type by converting from string to integer</span>
+    <span class="s1">planet_type.append(planet_type_dict[total_system_populated[i]])</span>
+    <span class="s2"># Calculate planet details</span>
+    <span class="s1">planet_file.append(Planetary_Object(planet_type[i]))</span>
+    <span class="s2"># Calculate moon details</span>
+    <span class="s1">moon_file.append(Moons(planet_type[i]))</span>
+    <span class="s2"># Determine if planet is in the life zone</span>
+    <span class="s1">i += </span><span class="s3">1</span>
+
+<span class="s2"># Translate tuple values from Planetary_Object into individual lists</span>
+<span class="s1">dia_list = [dia_tuple[</span><span class="s3">0</span><span class="s1">] </span><span class="s0">for </span><span class="s1">dia_tuple </span><span class="s0">in </span><span class="s1">planet_file]</span>
+<span class="s1">den_list = [den_tuple[</span><span class="s3">1</span><span class="s1">] </span><span class="s0">for </span><span class="s1">den_tuple </span><span class="s0">in </span><span class="s1">planet_file]</span>
+<span class="s1">day_list = [day_tuple[</span><span class="s3">2</span><span class="s1">] </span><span class="s0">for </span><span class="s1">day_tuple </span><span class="s0">in </span><span class="s1">planet_file]</span>
+<span class="s1">grav_list = [grav_tuple[</span><span class="s3">3</span><span class="s1">] </span><span class="s0">for </span><span class="s1">grav_tuple </span><span class="s0">in </span><span class="s1">planet_file]</span>
+<span class="s1">esc_velocity_list = [esc_tuple[</span><span class="s3">4</span><span class="s1">] </span><span class="s0">for </span><span class="s1">esc_tuple </span><span class="s0">in </span><span class="s1">planet_file]</span>
+
+<span class="s2"># Translate moon values from Moon into individual lists</span>
+<span class="s1">small_moon = [small_tuple[</span><span class="s3">0</span><span class="s1">] </span><span class="s0">for </span><span class="s1">small_tuple </span><span class="s0">in </span><span class="s1">moon_file]</span>
+<span class="s1">medium_moon = [medium_tuple[</span><span class="s3">1</span><span class="s1">] </span><span class="s0">for </span><span class="s1">medium_tuple </span><span class="s0">in </span><span class="s1">moon_file]</span>
+<span class="s1">large_moon = [large_tuple[</span><span class="s3">2</span><span class="s1">] </span><span class="s0">for </span><span class="s1">large_tuple </span><span class="s0">in </span><span class="s1">moon_file]</span>
+<span class="s1">giant_moon = [giant_tuple[</span><span class="s3">3</span><span class="s1">] </span><span class="s0">for </span><span class="s1">giant_tuple </span><span class="s0">in </span><span class="s1">moon_file]</span>
+<span class="s1">ring = [ring_tuple[</span><span class="s3">4</span><span class="s1">] </span><span class="s0">for </span><span class="s1">ring_tuple </span><span class="s0">in </span><span class="s1">moon_file]</span>
+
+<span class="s2"># Atmospheric Information for Terrestrial Planets</span>
+<span class="s0">def </span><span class="s1">atmosphere(planet_type</span><span class="s0">, </span><span class="s1">slot):</span>
+    <span class="s1">habitable = </span><span class="s0">False</span>
+    <span class="s1">pressure_options = {</span><span class="s3">0</span><span class="s1">: </span><span class="s4">&quot;Vacuum&quot;</span><span class="s0">,</span>
+                        <span class="s3">1</span><span class="s1">: </span><span class="s4">&quot;Vacuum&quot;</span><span class="s0">,</span>
+                        <span class="s3">2</span><span class="s1">: </span><span class="s4">&quot;Vacuum&quot;</span><span class="s0">,</span>
+                        <span class="s3">3</span><span class="s1">: </span><span class="s4">&quot;Vacuum&quot;</span><span class="s0">,</span>
+                        <span class="s3">4</span><span class="s1">: </span><span class="s4">&quot;Trace&quot;</span><span class="s0">,</span>
+                        <span class="s3">5</span><span class="s1">: </span><span class="s4">&quot;Low&quot;</span><span class="s0">,</span>
+                        <span class="s3">6</span><span class="s1">: </span><span class="s4">&quot;Low&quot;</span><span class="s0">,</span>
+                        <span class="s3">7</span><span class="s1">: </span><span class="s4">&quot;Normal&quot;</span><span class="s0">,</span>
+                        <span class="s3">8</span><span class="s1">: </span><span class="s4">&quot;Normal&quot;</span><span class="s0">,</span>
+                        <span class="s3">9</span><span class="s1">: </span><span class="s4">&quot;High&quot;</span><span class="s0">,</span>
+                        <span class="s3">10</span><span class="s1">: </span><span class="s4">&quot;High&quot;</span><span class="s0">,</span>
+                        <span class="s3">11</span><span class="s1">: </span><span class="s4">&quot;Very High&quot;</span><span class="s0">,</span>
+                        <span class="s3">12</span><span class="s1">: </span><span class="s4">&quot;Very High&quot;</span><span class="s0">,</span>
+                        <span class="s3">13</span><span class="s1">: </span><span class="s4">&quot;Very High&quot;</span><span class="s0">,</span>
+                        <span class="s3">14</span><span class="s1">: </span><span class="s4">&quot;Very High&quot;</span><span class="s0">,</span>
+                        <span class="s3">15</span><span class="s1">: </span><span class="s4">&quot;Very High&quot;</span><span class="s1">}</span>
+    <span class="s1">pressure_roll = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - (</span><span class="s3">2 </span><span class="s1">* lifezone_check[slot])</span>
+    <span class="s1">pressure_roll = round(pressure_roll * (esc_velocity_list[slot] / </span><span class="s3">11186</span><span class="s1">))</span>
+    <span class="s1">pressure = pressure_options[pressure_roll]</span>
+    <span class="s2"># Calculate Habitability</span>
+    <span class="s0">if </span><span class="s1">pressure_roll &lt; </span><span class="s3">5 </span><span class="s0">or </span><span class="s1">pressure_roll &gt; </span><span class="s3">10</span><span class="s1">:</span>
+        <span class="s1">habitable = </span><span class="s0">False</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s0">if </span><span class="s3">10 </span><span class="s1">&gt;= pressure_roll &gt;= </span><span class="s3">9 </span><span class="s0">or </span><span class="s3">6 </span><span class="s1">&gt;= pressure_roll &gt;= </span><span class="s3">5</span><span class="s1">:</span>
+            <span class="s1">lowhigh_press_check = </span><span class="s3">1</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">lowhigh_press_check = </span><span class="s3">0</span>
+        <span class="s0">if </span><span class="s1">planet_type == </span><span class="s3">4</span><span class="s1">:</span>
+            <span class="s1">giant_terra = </span><span class="s3">1</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">giant_terra = </span><span class="s3">0</span>
+        <span class="s1">habit_roll = rolldice(</span><span class="s3">2</span><span class="s0">, </span><span class="s3">6</span><span class="s1">) - lowhigh_press_check - (</span><span class="s3">2 </span><span class="s1">* giant_terra) + int(habit_mod)</span>
+        <span class="s0">if </span><span class="s1">habit_roll &gt;= </span><span class="s3">9</span><span class="s1">:</span>
+            <span class="s1">habitable = </span><span class="s0">True</span>
+        <span class="s0">else</span><span class="s1">:</span>
+            <span class="s1">habitable = </span><span class="s0">False</span>
+    <span class="s0">return </span><span class="s1">pressure</span><span class="s0">, </span><span class="s1">habitable</span>
+
+<span class="s1">i = </span><span class="s3">0</span>
+
+<span class="s0">while </span><span class="s1">i &lt; len(total_system_populated):</span>
+    <span class="s0">if </span><span class="s1">float(OLZ_dist_au) &gt;= orbital_locations[i] &gt;= float(ILZ_dist_au):</span>
+        <span class="s1">lifezone_check.append(</span><span class="s3">0</span><span class="s1">)  </span><span class="s2"># True</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">lifezone_check.append(</span><span class="s3">1</span><span class="s1">)  </span><span class="s2"># False</span>
+    <span class="s2"># Use planet type to test for terrestrial planet atmosphere</span>
+    <span class="s0">if </span><span class="s1">planet_type[i] == </span><span class="s3">2 </span><span class="s0">or </span><span class="s1">planet_type[i] == </span><span class="s3">3 </span><span class="s0">or </span><span class="s1">planet_type[i] == </span><span class="s3">4</span><span class="s1">:</span>
+        <span class="s1">terra_atmosphere.append(atmosphere(planet_type[i]</span><span class="s0">, </span><span class="s1">i))</span>
+    <span class="s0">else</span><span class="s1">:</span>
+        <span class="s1">terra_atmosphere.append((</span><span class="s0">False, False</span><span class="s1">))</span>
+    <span class="s1">i += </span><span class="s3">1</span>
+
+<span class="s1">pressure_list = [pressure[</span><span class="s3">0</span><span class="s1">] </span><span class="s0">for </span><span class="s1">pressure </span><span class="s0">in </span><span class="s1">terra_atmosphere]</span>
+<span class="s1">habitable_list = [habitable[</span><span class="s3">1</span><span class="s1">] </span><span class="s0">for </span><span class="s1">habitable </span><span class="s0">in </span><span class="s1">terra_atmosphere]</span>
+
+<span class="s2"># Export planet data in csv file</span>
+<span class="s1">j = </span><span class="s3">0</span>
+<span class="s0">with </span><span class="s1">open(</span><span class="s4">&quot;Planet Data.csv&quot;</span><span class="s0">, </span><span class="s4">&quot;w&quot;</span><span class="s0">, </span><span class="s1">newline=</span><span class="s4">&quot;&quot;</span><span class="s1">) </span><span class="s0">as </span><span class="s1">csvfile:</span>
+    <span class="s1">planetwriter = csv.writer(csvfile</span><span class="s0">, </span><span class="s1">delimiter=</span><span class="s4">&quot;,&quot;</span><span class="s0">, </span><span class="s1">quotechar=</span><span class="s4">'&quot;'</span><span class="s0">, </span><span class="s1">quoting=csv.QUOTE_MINIMAL)</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Star Type: &quot; </span><span class="s1">+ str(star_type[</span><span class="s3">0</span><span class="s1">]) + str(star_type[</span><span class="s3">1</span><span class="s1">]) + </span><span class="s4">&quot;V&quot;</span><span class="s1">])</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Orbital slots: &quot; </span><span class="s1">+ str(orbit_total)])</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Star mass: &quot; </span><span class="s1">+ str(mass) + </span><span class="s4">&quot; (Mstar/Msun)&quot;</span><span class="s1">])</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Life zone bounds are &quot; </span><span class="s1">+ str(ILZ_dist_au) + </span><span class="s4">&quot; AU to &quot; </span><span class="s1">+ str(OLZ_dist_au) + </span><span class="s4">&quot; AU.&quot;</span><span class="s1">])</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Life Zone slots: &quot; </span><span class="s1">+ str(life_system)])</span>
+    <span class="s1">planetwriter.writerow([</span><span class="s4">&quot;Slot&quot;</span><span class="s0">, </span><span class="s4">&quot;Distance (AU)&quot;</span><span class="s0">, </span><span class="s4">&quot;Planetary Object&quot;</span><span class="s0">, </span><span class="s4">&quot;Diameter (km)&quot;</span><span class="s0">, </span><span class="s4">&quot;Density (g/cm^3)&quot;</span><span class="s0">,</span>
+                           <span class="s4">&quot;Day Length (hours)&quot;</span><span class="s0">, </span><span class="s4">&quot;Surface Gravity (G)&quot;</span><span class="s0">, </span><span class="s4">&quot;Terrestrial Atmospheric Pressure&quot;</span><span class="s0">,</span>
+                           <span class="s4">&quot;Habitable?&quot;</span><span class="s0">, </span><span class="s4">&quot;Small Moons&quot;</span><span class="s0">, </span><span class="s4">&quot;Medium Moons&quot;</span><span class="s0">, </span><span class="s4">&quot;Large Rooms&quot;</span><span class="s0">, </span><span class="s4">&quot;Giant Moons&quot;</span><span class="s0">, </span><span class="s4">&quot;Rings&quot;</span><span class="s1">])</span>
+    <span class="s0">while </span><span class="s1">j &lt; len(planet_type):</span>
+        <span class="s1">planetwriter.writerow([j+</span><span class="s3">1</span><span class="s0">, </span><span class="s1">orbital_locations[j]</span><span class="s0">, </span><span class="s1">total_system_populated[j]</span><span class="s0">, </span><span class="s1">dia_list[j]</span><span class="s0">, </span><span class="s1">den_list[j]</span><span class="s0">,</span>
+                               <span class="s1">day_list[j]</span><span class="s0">, </span><span class="s1">grav_list[j]</span><span class="s0">, </span><span class="s1">pressure_list[j]</span><span class="s0">, </span><span class="s1">habitable_list[j]</span><span class="s0">,</span>
+                               <span class="s1">small_moon[j]</span><span class="s0">, </span><span class="s1">medium_moon[j]</span><span class="s0">, </span><span class="s1">large_moon[j]</span><span class="s0">, </span><span class="s1">giant_moon[j]</span><span class="s0">, </span><span class="s1">ring[j]])</span>
+        <span class="s1">j += </span><span class="s3">1</span>
+
+
+
+</pre>
+</body>
+</html>

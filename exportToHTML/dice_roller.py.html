@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>dice_roller.py</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6897bb;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+dice_roller.py</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">random</span>
+
+
+<span class="s2"># Function to roll dice for many tables</span>
+<span class="s0">def </span><span class="s1">rolldice(die_num</span><span class="s0">, </span><span class="s1">die_size):</span>
+    <span class="s1">a = []  </span><span class="s2"># creates a list to store values</span>
+    <span class="s0">for </span><span class="s1">roll </span><span class="s0">in </span><span class="s1">range(</span><span class="s3">0</span><span class="s0">, </span><span class="s1">die_num):</span>
+        <span class="s1">a.append(random.randint(</span><span class="s3">1</span><span class="s0">, </span><span class="s1">die_size))</span>
+    <span class="s1">add = sum(a[</span><span class="s3">0</span><span class="s1">:])</span>
+    <span class="s2"># print(&quot;Roll: &quot; + str(die_num) + &quot;d&quot; + str(die_size) + &quot; = &quot; + str(add))</span>
+    <span class="s0">return </span><span class="s1">add</span>
+</pre>
+</body>
+</html>
